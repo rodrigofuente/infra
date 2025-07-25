@@ -9,29 +9,40 @@
     vmtools.flake = false;
   };
 
-  outputs = {self, ...} @ inputs: {
-    nixosConfigurations = {
-      aegis = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          hostname = "aegis";
-        };
-        modules = [
-          ./configuration.nix
-          ./hardware-configuration-aegis.nix
-        ];
+  outputs = {self, nixpkgs, nixos-hardware, ... }: let
+      hardwareConfigs = {
+        "aegis" = {
+	  system = "x86_64-linux";
+	  hardwareModules = [
+	    ./hardware-configuration-aegis.nix
+	  ];
+	};
+        "freedom" = {
+	  system = "x86_64-linux";
+	  hardwareModules = [
+	    ./hardware-configuration-freedom.nix
+	  ];
+	};
       };
-      freedom = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          hostname = "freedom";
-        };
-        modules = [
-          ./configuration.nix
-          ./hardware-configuration-freedom.nix
-        ];
-      };
-    };
 
+      commonModules = [
+        ./configuration.nix
+      ];
+    
+      mkSystem = hostname: config: nixpkgs.lib.nixosSystem {
+        system = config.system;
+        specialArgs = {
+          inherit nixpkgs nixos-hardware;
+	  inherit hostname;
+        };
+        modules = commonModules ++ config.hardwareModules ++ [
+          {
+	    networking.hostName = hostname;
+	    nixpkgs.hostPlatform = config.system;
+	  }
+        ];
+      };
+    in {
+      nixosConfigurations = nixpkgs.lib.mapAttrs mkSystem hardwareConfigs;
   };
 }
