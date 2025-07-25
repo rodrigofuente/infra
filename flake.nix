@@ -4,45 +4,33 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
   };
 
-  inputs = {
-    vmtools.url = "github:4km3/vmtools";
-    vmtools.flake = false;
-  };
-
   outputs = {self, nixpkgs, nixos-hardware, ... }: let
       hardwareConfigs = {
         "aegis" = {
-	  system = "x86_64-linux";
-	  hardwareModules = [
-	    ./hardware-configuration-aegis.nix
-	  ];
-	};
+          system = "x86_64-linux";
+          type   = "mac";
+        };
         "freedom" = {
-	  system = "x86_64-linux";
-	  hardwareModules = [
-	    ./hardware-configuration-freedom.nix
-	  ];
-	};
+          system = "x86_64-linux";
+          type   = "nuc";
+        };
       };
 
-      commonModules = [
-        ./configuration.nix
-      ];
-    
       mkSystem = hostname: config: nixpkgs.lib.nixosSystem {
         system = config.system;
         specialArgs = {
           inherit nixpkgs nixos-hardware;
-	  inherit hostname;
+          inherit hostname;
         };
-        modules = commonModules ++ config.hardwareModules ++ [
-          {
-	    networking.hostName = hostname;
-	    nixpkgs.hostPlatform = config.system;
-	  }
+        modules = [
+          ./common.nix
+          ./hardware-configuration-${hostname}.nix
+          ./configuration-${config.type}.nix
         ];
       };
     in {
       nixosConfigurations = nixpkgs.lib.mapAttrs mkSystem hardwareConfigs;
   };
 }
+
+# gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true
