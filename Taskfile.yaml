@@ -1,0 +1,338 @@
+version: "3"
+
+tasks:
+  # System Management
+  rebuild:
+    desc: "Rebuild NixOS system configuration"
+    cmds:
+      - sudo nixos-rebuild switch
+
+  rebuild-boot:
+    desc: "Rebuild NixOS system configuration (apply on next boot)"
+    cmds:
+      - sudo nixos-rebuild boot
+
+  rebuild-test:
+    desc: "Test NixOS system configuration without making it default"
+    cmds:
+      - sudo nixos-rebuild test
+
+  rebuild-dry:
+    desc: "Dry run of NixOS system rebuild"
+    cmds:
+      - sudo nixos-rebuild dry-run
+
+  # Flake-based System Management
+  flake-rebuild:
+    desc: "Rebuild NixOS system using flakes"
+    cmds:
+      - sudo nixos-rebuild switch --flake .
+
+  flake-rebuild-boot:
+    desc: "Rebuild NixOS system using flakes (apply on next boot)"
+    cmds:
+      - sudo nixos-rebuild boot --flake .
+
+  flake-rebuild-test:
+    desc: "Test NixOS system configuration using flakes"
+    cmds:
+      - sudo nixos-rebuild test --flake .
+
+  flake-rebuild-remote:
+    desc: "Rebuild remote NixOS system using flakes"
+    vars:
+      HOST: '{{.HOST | default "hostname"}}'
+    cmds:
+      - sudo nixos-rebuild switch --flake .#{{.HOST}} --target-host {{.HOST}}
+
+  # Flake Management
+  flake-init:
+    desc: "Initialize a new flake in current directory"
+    cmds:
+      - nix flake init
+
+  flake-update:
+    desc: "Update flake inputs"
+    cmds:
+      - nix flake update
+
+  flake-update-input:
+    desc: "Update specific flake input"
+    vars:
+      INPUT: '{{.INPUT | default "nixpkgs"}}'
+    cmds:
+      - nix flake update {{.INPUT}}
+
+  flake-lock:
+    desc: "Generate flake.lock file"
+    cmds:
+      - nix flake lock
+
+  flake-check:
+    desc: "Check flake for errors"
+    cmds:
+      - nix flake check
+
+  flake-show:
+    desc: "Show flake outputs"
+    cmds:
+      - nix flake show
+
+  flake-info:
+    desc: "Show flake metadata"
+    cmds:
+      - nix flake metadata
+
+  # Package Management
+  search:
+    desc: "Search for packages"
+    vars:
+      PACKAGE: '{{.PACKAGE | default ""}}'
+    cmds:
+      - nix search nixpkgs {{.PACKAGE}}
+
+  install:
+    desc: "Install package temporarily"
+    vars:
+      PACKAGE: '{{.PACKAGE | default ""}}'
+    cmds:
+      - nix-shell -p {{.PACKAGE}}
+
+  install-flake:
+    desc: "Install package from flake temporarily"
+    vars:
+      PACKAGE: '{{.PACKAGE | default ""}}'
+    cmds:
+      - nix shell nixpkgs#{{.PACKAGE}}
+
+  run:
+    desc: "Run package without installing"
+    vars:
+      PACKAGE: '{{.PACKAGE | default ""}}'
+    cmds:
+      - nix run nixpkgs#{{.PACKAGE}}
+
+  # Development Environments
+  develop:
+    desc: "Enter development environment from flake"
+    cmds:
+      - nix develop
+
+  develop-flake:
+    desc: "Enter development environment from specific flake"
+    vars:
+      FLAKE: '{{.FLAKE | default "."}}'
+    cmds:
+      - nix develop {{.FLAKE}}
+
+  shell:
+    desc: "Enter nix-shell with packages"
+    vars:
+      PACKAGES: '{{.PACKAGES | default ""}}'
+    cmds:
+      - nix-shell -p {{.PACKAGES}}
+
+  # System Information
+  generations:
+    desc: "List system generations"
+    cmds:
+      - sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+
+  rollback:
+    desc: "Rollback to previous generation"
+    cmds:
+      - sudo nixos-rebuild switch --rollback
+
+  generation-info:
+    desc: "Show information about specific generation"
+    vars:
+      GEN: '{{.GEN | default "current"}}'
+    cmds:
+      - nix-env --list-generations --profile /nix/var/nix/profiles/system | grep "{{.GEN}}"
+
+  # Garbage Collection
+  gc:
+    desc: "Run garbage collection"
+    cmds:
+      - sudo nix-collect-garbage
+
+  gc-old:
+    desc: "Remove old generations and run garbage collection"
+    cmds:
+      - sudo nix-collect-garbage -d
+
+  gc-generations:
+    desc: "Remove generations older than specified days"
+    vars:
+      DAYS: '{{.DAYS | default "7"}}'
+    cmds:
+      - sudo nix-collect-garbage --delete-older-than {{.DAYS}}d
+
+  optimize:
+    desc: "Optimize nix store"
+    cmds:
+      - sudo nix-store --optimize
+
+  # Store Management
+  store-verify:
+    desc: "Verify nix store integrity"
+    cmds:
+      - sudo nix-store --verify --check-contents
+
+  store-repair:
+    desc: "Repair nix store"
+    cmds:
+      - sudo nix-store --repair --verify --check-contents
+
+  store-info:
+    desc: "Show nix store information"
+    cmds:
+      - nix path-info --all --human-readable --closure-size | sort -k2 -h
+
+  # Configuration Management
+  config-edit:
+    desc: "Edit NixOS configuration"
+    cmds:
+      - sudo $EDITOR /etc/nixos/configuration.nix
+
+  config-test:
+    desc: "Test configuration syntax"
+    cmds:
+      - sudo nix-instantiate --parse /etc/nixos/configuration.nix > /dev/null
+
+  # Hardware and Drivers
+  hardware-scan:
+    desc: "Generate hardware configuration"
+    cmds:
+      - sudo nixos-generate-config --show-hardware-config
+
+  # Channels (for non-flake systems)
+  channel-list:
+    desc: "List nix channels"
+    cmds:
+      - sudo nix-channel --list
+
+  channel-update:
+    desc: "Update nix channels"
+    cmds:
+      - sudo nix-channel --update
+
+  channel-add:
+    desc: "Add nix channel"
+    vars:
+      URL: '{{.URL | default ""}}'
+      NAME: '{{.NAME | default "nixos"}}'
+    cmds:
+      - sudo nix-channel --add {{.URL}} {{.NAME}}
+
+  # Home Manager (if using flakes)
+  home-rebuild:
+    desc: "Rebuild home-manager configuration"
+    cmds:
+      - home-manager switch --flake .
+
+  home-generations:
+    desc: "List home-manager generations"
+    cmds:
+      - home-manager generations
+
+  # Docker/Containers (if enabled)
+  docker-gc:
+    desc: "Clean up docker containers and images"
+    cmds:
+      - docker system prune -af
+
+  # System Services
+  service-status:
+    desc: "Check systemd service status"
+    vars:
+      SERVICE: '{{.SERVICE | default ""}}'
+    cmds:
+      - systemctl status {{.SERVICE}}
+
+  service-restart:
+    desc: "Restart systemd service"
+    vars:
+      SERVICE: '{{.SERVICE | default ""}}'
+    cmds:
+      - sudo systemctl restart {{.SERVICE}}
+
+  service-enable:
+    desc: "Enable systemd service"
+    vars:
+      SERVICE: '{{.SERVICE | default ""}}'
+    cmds:
+      - sudo systemctl enable {{.SERVICE}}
+
+  # Development and Building
+  build:
+    desc: "Build flake output"
+    vars:
+      OUTPUT: '{{.OUTPUT | default "."}}'
+    cmds:
+      - nix build {{.OUTPUT}}
+
+  build-vm:
+    desc: "Build NixOS VM"
+    cmds:
+      - nixos-rebuild build-vm
+
+  # Formatting and Linting
+  format:
+    desc: "Format Nix files with nixpkgs-fmt"
+    cmds:
+      - find . -name "*.nix" -exec nixpkgs-fmt {} \;
+
+  lint:
+    desc: "Lint Nix files with statix"
+    cmds:
+      - statix check .
+
+  # Maintenance Tasks
+  maintenance:
+    desc: "Run full system maintenance"
+    cmds:
+      - task: gc-old
+      - task: optimize
+      - task: store-verify
+
+  # Backup
+  backup-config:
+    desc: "Backup NixOS configuration"
+    vars:
+      BACKUP_DIR: '{{.BACKUP_DIR | default "~/nixos-backup"}}'
+    cmds:
+      - mkdir -p {{.BACKUP_DIR}}
+      - cp -r /etc/nixos/* {{.BACKUP_DIR}}/
+      - echo "Configuration backed up to {{.BACKUP_DIR}}"
+
+  # System Information
+  system-info:
+    desc: "Display system information"
+    cmds:
+      - echo "NixOS Version:"
+      - nixos-version
+      - echo -e "\nKernel:"
+      - uname -r
+      - echo -e "\nUptime:"
+      - uptime
+      - echo -e "\nDisk Usage:"
+      - df -h /
+
+  # Quick Commands
+  quick-rebuild:
+    desc: "Quick rebuild with flakes (most common command)"
+    cmds:
+      - task: flake-rebuild
+
+  quick-update:
+    desc: "Update flake and rebuild"
+    cmds:
+      - task: flake-update
+      - task: flake-rebuild
+
+  # Help
+  help:
+    desc: "Show available tasks"
+    cmds:
+      - task --list
