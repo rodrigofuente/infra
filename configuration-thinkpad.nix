@@ -14,6 +14,8 @@
     variant = "";
   };
 
+  services.fprintd.enable = true;
+
   networking.networkmanager.enable = true;
 
   services.printing.enable = true;
