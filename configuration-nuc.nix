@@ -25,7 +25,6 @@
   };
 
   programs.firefox.enable = true;
-  nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
     neovim
     zed-editor
@@ -34,5 +33,4 @@
 
   services.openssh.enable = true;
   system.stateVersion = "25.05";
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 }
