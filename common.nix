@@ -6,7 +6,6 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.hostName = hostname;
-  networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Madrid";
   i18n.defaultLocale = "en_US.UTF-8";
