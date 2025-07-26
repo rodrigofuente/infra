@@ -31,6 +31,7 @@
     neovim
     zed-editor
     git
+    go-task
   ];
 
   services.openssh.enable = true;
