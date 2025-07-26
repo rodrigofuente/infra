@@ -32,5 +32,3 @@
       nixosConfigurations = nixpkgs.lib.mapAttrs mkSystem hardwareConfigs;
   };
 }
-
-# gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true
