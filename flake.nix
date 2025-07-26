@@ -8,11 +8,15 @@
       hardwareConfigs = {
         "aegis" = {
           system = "x86_64-linux";
-          type   = "mac";
+          type   = "thinkpad";
         };
         "freedom" = {
           system = "x86_64-linux";
           type   = "nuc";
+        };
+        "sandbox" = {
+          system = "x86_64-linux";
+          type   = "mac";
         };
       };
 
