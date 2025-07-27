@@ -6,17 +6,20 @@
 
   outputs = {self, nixpkgs, nixos-hardware, ... }: let
       hardwareConfigs = {
-        "aegis" = {
-          system = "x86_64-linux";
-          type   = "thinkpad";
+        "argo" = {
+          system   = "x86_64-linux";
+          hardware = "thinkpad";
+          profile  = "workstation";
         };
-        "freedom" = {
-          system = "x86_64-linux";
-          type   = "nuc";
+        "prydwen" = {
+          system   = "x86_64-linux";
+          hardware = "nuc";
+          profile  = "workstation";
         };
-        "sandbox" = {
-          system = "x86_64-linux";
-          type   = "mac";
+        "selene" = {
+          system   = "x86_64-linux";
+          hardware = "mac";
+          profile  = "workstation";
         };
       };
 
@@ -27,9 +30,10 @@
           inherit hostname;
         };
         modules = [
-          ./common.nix
-          ./hardware-configuration-${hostname}.nix
-          ./configuration-${config.type}.nix
+          modules/common.nix
+          hosts/${hostname}.nix
+          hardware/${config.hardware}.nix
+          profiles/${config.profile}.nix
         ];
       };
     in {

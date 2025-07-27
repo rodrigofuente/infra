@@ -1,4 +1,4 @@
-{ config, pkgs, hostname,... }:
+{ config, ... }:
 
 {
   services.xserver.enable = true;
@@ -15,24 +15,4 @@
   };
 
   networking.networkmanager.enable = true;
-
-  services.printing.enable = true;
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-
-  programs.firefox.enable = true;
-  environment.systemPackages = with pkgs; [
-    neovim
-    zed-editor
-    git
-  ];
-
-  services.openssh.enable = true;
-  system.stateVersion = "25.05";
 }
