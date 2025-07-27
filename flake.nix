@@ -8,18 +8,26 @@
       hardwareConfigs = {
         "argo" = {
           system   = "x86_64-linux";
-          hardware = "thinkpad";
           profile  = "workstation";
+          extraModules = [
+            nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen2
+            (
+              { config, ... }:
+              {
+                services.fprintd.enable = true;
+              }
+            )
+          ];
         };
         "prydwen" = {
           system   = "x86_64-linux";
-          hardware = "nuc";
           profile  = "workstation";
+          extraModules = [ nixos-hardware.nixosModules.intel-nuc-8i7beh];
         };
         "selene" = {
           system   = "x86_64-linux";
-          hardware = "mac";
           profile  = "workstation";
+          extraModules = [ nixos-hardware.nixosModules.apple-macbook-pro-14-1 ];
         };
       };
 

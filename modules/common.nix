@@ -6,6 +6,7 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.hostName = hostname;
+  services.openssh.enable = true;
 
   time.timeZone = "Europe/Madrid";
   i18n.defaultLocale = "en_US.UTF-8";
