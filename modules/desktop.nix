@@ -8,7 +8,7 @@
     [org.gnome.mutter]
     experimental-features = ['scale-monitor-framebuffer']
   '';
-  services.xserver.libinput.touchpad.disableWhileTyping = true;
+  services.libinput.touchpad.disableWhileTyping = true;
   services.xserver.xkb = {
     layout = "us";
     variant = "";
