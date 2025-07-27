@@ -23,8 +23,8 @@
         };
       };
 
-      mkSystem = hostname: config: nixpkgs.lib.nixosSystem {
-        system = config.system;
+      mkSystem = hostname: hardwareConfigs: nixpkgs.lib.nixosSystem {
+        system = hardwareConfigs.system;
         specialArgs = {
           inherit nixpkgs nixos-hardware;
           inherit hostname;
@@ -32,8 +32,8 @@
         modules = [
           modules/common.nix
           hosts/${hostname}.nix
-          hardware/${config.hardware}.nix
-          profiles/${config.profile}.nix
+          hardware/${hardwareConfigs.hardware}.nix
+          profiles/${hardwareConfigs.profile}.nix
         ];
       };
     in {
