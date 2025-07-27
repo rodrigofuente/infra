@@ -19,43 +19,5 @@
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   hardware.enableAllFirmware = true;
 
-  disko.devices.disk.main.device = "/dev/nvme0n1";
-
-  disko.devices.disk = {
-    main = {
-      type = "disk";
-      content = {
-        type = "gpt";
-        partitions = {
-          ESP = {
-            priority = 1;
-            label = "ESP";
-            size = "1G";
-            type = "EF00";
-            content = {
-              type = "filesystem";
-              format = "vfat";
-              extraArgs = [
-                "-F32"
-                "-nESP"
-              ];
-            mountpoint = "/boot";
-            mountOptions = [ "umask=0077" ];
-            };
-          };
-          root = {
-            label = "root";
-            size = "100%";
-            content = {
-              type = "btrfs";
-              extraArgs = [ "-f" ];
-              mountpoint = "/";
-            };
-          };
-        };
-      };
-    };
-  };
-
   system.stateVersion = "25.05";
 }
