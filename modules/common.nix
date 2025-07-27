@@ -23,9 +23,12 @@
 
   users.users.rodrigo = {
     isNormalUser = true;
+    shell       = pkgs.fish;
     description = "rodrigo";
     extraGroups = [ "networkmanager" "wheel" ];
   };
+
+  programs.fish.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
