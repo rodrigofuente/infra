@@ -54,7 +54,7 @@ tasks:
   flake-update:
     desc: "Update flake inputs"
     cmds:
-      - nix flake update
+      - nix flake update --commit-lock-file
 
   flake-update-input:
     desc: "Update specific flake input"
