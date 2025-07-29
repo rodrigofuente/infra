@@ -13,4 +13,5 @@
   ];
   programs.neovim.enable = true;
   programs.neovim.defaultEditor = true;
+  services.protonmail-bridge.enable = true;
 }
