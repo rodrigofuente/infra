@@ -9,6 +9,7 @@
     librewolf
     ungoogled-chromium
     telegram-desktop
+    ghostty
   ];
   programs.neovim.enable = true;
   programs.neovim.defaultEditor = true;
