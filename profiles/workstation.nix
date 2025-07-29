@@ -1,6 +1,11 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
+  boot = {
+    plymouth = {
+      enable = true;
+    };
+  };
   imports = [
     ../modules/desktop.nix
     ../modules/print.nix
