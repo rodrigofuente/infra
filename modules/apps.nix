@@ -10,6 +10,10 @@
     ungoogled-chromium
     telegram-desktop
     ghostty
+    mpv
+    libimobiledevice
+    ifuse
+    ollama
   ];
 
   services.usbmuxd = {
