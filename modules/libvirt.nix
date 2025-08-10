@@ -17,6 +17,9 @@
     };
   };
 
+  programs.virt-manager.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+
   users.users.rodrigo = {
     extraGroups = [ "libvirtd" ];
   };
