@@ -13,10 +13,12 @@
           profile  = "workstation";
           extraModules = [
             nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen2
+            hosts/disk-config.nix
             (
               { config, ... }:
               {
                 services.fprintd.enable = true;
+                disko.devices.disk.main.device = "/dev/nvme0n1";
               }
             )
           ];
@@ -24,7 +26,16 @@
         "prydwen" = {
           system   = "x86_64-linux";
           profile  = "workstation";
-          extraModules = [ nixos-hardware.nixosModules.intel-nuc-8i7beh ];
+          extraModules = [
+            nixos-hardware.nixosModules.intel-nuc-8i7beh
+            hosts/disk-config.nix
+            (
+              { config, ... }:
+              {
+                disko.devices.disk.main.device = "/dev/nvme0n1";
+              }
+            )
+          ];
         };
         "selene" = {
           system   = "x86_64-linux";
